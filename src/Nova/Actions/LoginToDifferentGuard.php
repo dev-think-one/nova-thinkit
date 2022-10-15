@@ -69,7 +69,7 @@ class LoginToDifferentGuard extends DestructiveAction
                 return $this->confirmText;
             }),
             Boolean::make(trans('nova-thinkit::action.login-as.remember.label'), 'remember_me')
-                   ->help(trans('nova-thinkit::action.login-as.remember.help'))
+                   ->help(trans('nova-thinkit::action.login-as.remember.help')),
         ];
     }
 

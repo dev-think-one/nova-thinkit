@@ -14,7 +14,7 @@ class BelongsToFilter extends BooleanFilter
     public function __construct(string $relationName)
     {
         $this->relationName = $relationName;
-        $this->name = Str::ucfirst(Str::snake($this->relationName, ' '));
+        $this->name         = Str::ucfirst(Str::snake($this->relationName, ' '));
     }
 
     public function apply(NovaRequest $request, $query, $value)
@@ -50,5 +50,4 @@ class BelongsToFilter extends BooleanFilter
 
         return $this;
     }
-
 }
