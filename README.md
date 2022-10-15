@@ -24,6 +24,50 @@ php artisan vendor:publish --provider="NovaThinKit\ServiceProvider" --tag="lang"
 
 ## Usage
 
+### Actions
+
+#### Login to different guard
+
+```php
+use NovaThinKit\Nova\Actions\LoginToDifferentGuard;
+
+public function actions(NovaRequest $request)
+{
+    return [
+        (new LoginToDifferentGuard(
+            route('dashboard.overview'),
+            'owners_web',
+            __('Login to owner dashboard'),
+            __('Are you sure you want to continue?'),
+        ))
+            // optional callback how to find correct user
+            ->findIdUsing(fn (Contact $model) => Owner::query()->where('contact_id', $model->getKey())->first()?->getKey())
+            // other default method actions...
+            ->canRun(fn ($request, Contact $model) => $model->role === "owner"),
+    ];
+}
+```
+
+### Filters
+
+#### BelongsTo filter
+
+Filter by related belongsTo relation.
+
+```php
+use NovaThinKit\Nova\Filters\BelongsToFilter;
+
+public function filters(NovaRequest $request)
+{
+    return [
+        new BelongsToFilter('type'),
+        // or
+        (new BelongsToFilter('type'))->setTitleKeyName('title'),
+        // or
+        (new BelongsToFilter('type'))->setFilterName('Filter by type'),
+    ];
+}
+```
 
 ## Credits
 
