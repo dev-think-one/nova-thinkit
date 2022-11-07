@@ -12,7 +12,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ], 'config');
 
             $this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/nova-thinkit'),
+                __DIR__.'/../lang' => resource_path('lang/vendor/nova-thinkit'),
             ], 'lang');
 
             $this->commands([
@@ -20,7 +20,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ]);
         }
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'nova-thinkit');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'nova-thinkit');
     }
 
     /**

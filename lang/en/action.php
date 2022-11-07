@@ -7,7 +7,7 @@ return [
         ],
         'remember' => [
             'label' => 'Remember',
-            'help' => 'Remember session (emulation of click "Remember me")',
+            'help'  => 'Emulate of click "Remember me"',
         ],
         'error' => [
             'user-not-found' => 'Something went wrong! User not found.',
