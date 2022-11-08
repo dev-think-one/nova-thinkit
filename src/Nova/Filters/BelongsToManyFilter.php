@@ -2,11 +2,12 @@
 
 namespace NovaThinKit\Nova\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Laravel\Nova\Filters\BooleanFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class BelongsToFilter extends BooleanFilter
+class BelongsToManyFilter extends BooleanFilter
 {
     protected string $relationName;
     protected string $titleKeyName = 'name';
@@ -21,10 +22,10 @@ class BelongsToFilter extends BooleanFilter
     {
         $selected = array_filter($value);
         if (count($selected)) {
-            /** @var \Illuminate\Database\Eloquent\Relations\BelongsTo $relation */
-            $relation = $query->getModel()->{$this->relationName}();
-
-            return $query->whereIn($relation->getForeignKeyName(), array_keys($selected));
+            return $query->whereHas(
+                $this->relationName,
+                fn (Builder $q) => $q->whereKey(array_keys($selected))
+            );
         }
 
         return $query;
@@ -32,10 +33,10 @@ class BelongsToFilter extends BooleanFilter
 
     public function options(NovaRequest $request)
     {
-        /** @var \Illuminate\Database\Eloquent\Relations\BelongsTo $relation */
+        /** @var \Illuminate\Database\Eloquent\Relations\BelongsToMany $relation */
         $relation = $request->model()->{$this->relationName}();
 
-        return $relation->getRelated()::query()->get()->pluck($relation->getOwnerKeyName(), $this->titleKeyName)->all();
+        return $relation->getRelated()::query()->get()->pluck($relation->getRelatedKeyName(), $this->titleKeyName)->all();
     }
 
     public function setTitleKeyName(string $titleKeyName): static
