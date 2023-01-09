@@ -13,5 +13,12 @@ return [
             'user-not-found' => 'Something went wrong! User not found.',
         ],
     ],
-
+    'reset-password-notification' => [
+        'warning' => [
+            'label' => 'Warning',
+        ],
+        'error' => [
+            'user-not-found' => 'Something went wrong! User not found.',
+        ],
+    ],
 ];

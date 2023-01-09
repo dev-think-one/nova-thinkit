@@ -4,15 +4,14 @@ namespace NovaThinKit\Nova\Actions;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\DestructiveAction;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use ThinkStudio\HtmlField\Html;
 
-class LoginToDifferentGuard extends DestructiveAction
+class SendResetPasswordEmail extends DestructiveAction
 {
     use ForUser;
 
@@ -21,8 +20,7 @@ class LoginToDifferentGuard extends DestructiveAction
     public $showOnDetail          = true;
 
     public function __construct(
-        protected string $redirectPath,
-        protected string $authGuard,
+        protected string $broker,
         ?string          $name = null,
         ?string          $confirmText = null,
     ) {
@@ -49,13 +47,18 @@ class LoginToDifferentGuard extends DestructiveAction
             && $model instanceof Model
             && ($modelId = $this->findId($model))
         ) {
-            Auth::guard($this->authGuard)->logout();
-            Auth::guard($this->authGuard)->loginUsingId($modelId, (bool) $fields->get('remember_me'));
+            $status = Password::broker($this->broker)->sendResetLink([
+                $model->getKeyName() => $modelId,
+            ]);
 
-            return Action::openInNewTab($this->redirectPath);
+            if ($status !== Password::RESET_LINK_SENT) {
+                return Action::danger(__($status));
+            }
+
+            return Action::message(__($status));
         }
 
-        return Action::danger(trans('nova-thinkit::action.login-as.error.user-not-found'));
+        return Action::danger(trans('nova-thinkit::action.reset-password-notification.error.user-not-found'));
     }
 
     /**
@@ -66,11 +69,9 @@ class LoginToDifferentGuard extends DestructiveAction
     public function fields(NovaRequest $request)
     {
         return [
-            Html::make(trans('nova-thinkit::action.login-as.warning.label'), function () {
+            Html::make(trans('nova-thinkit::action.reset-password-notification.warning.label'), function () {
                 return $this->confirmText;
             }),
-            Boolean::make(trans('nova-thinkit::action.login-as.remember.label'), 'remember_me')
-                   ->help(trans('nova-thinkit::action.login-as.remember.help')),
         ];
     }
 }
