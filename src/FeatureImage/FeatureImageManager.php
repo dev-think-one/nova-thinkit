@@ -26,6 +26,12 @@ class FeatureImageManager implements ImageManager
     public array $formats;
 
     /**
+     * Deleted formats
+     * @var array
+     */
+    public array $deletedFormats = [];
+
+    /**
      * Generate default responsive formats
      * @var bool
      */
@@ -48,6 +54,10 @@ class FeatureImageManager implements ImageManager
         if (isset($options['column'])) {
             $this->column = $options['column'];
         }
+
+        if (isset($options['deletedFormats']) && is_array($options['deletedFormats'])) {
+            $this->deletedFormats = $options['deletedFormats'];
+        }
     }
 
     public static function fromConfig(array $config): static
@@ -59,6 +69,14 @@ class FeatureImageManager implements ImageManager
             $config['options']    ?? [],
         );
     }
+
+    public function column(?string $column): static
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
 
     /**
      * @inheritDoc
@@ -119,8 +137,42 @@ class FeatureImageManager implements ImageManager
         if ($filename) {
             return $this->storage()->delete($filename);
         }
+        $fileName = $this->filename();
 
-        return $this->storage()->deleteDirectory($this->directory());
+        if (!$fileName) {
+            return false;
+        }
+
+        $filesToDelete = [
+            $fileName,
+        ];
+
+        [$name, $extension] = $this->explodeFilename($fileName);
+
+        foreach (array_keys($this->formats) as $format) {
+            $filesToDelete[] = "{$name}-{$format}.{$extension}";
+        }
+
+        foreach ($this->deletedFormats as $format) {
+            $filesToDelete[] = "{$name}-{$format}.{$extension}";
+        }
+
+        foreach ($this->storage()->files($this->directory()) as $file) {
+            if(
+                ($suffix = Str::between($file, "{$name}-", ".{$extension}")) &&
+                is_numeric($suffix)
+            ) {
+                $filesToDelete[] = $file;
+            }
+        }
+
+        $isDeleted =  $this->storage()->delete(array_unique($filesToDelete));
+
+        if(empty($this->storage()->files($this->directory()))) {
+            $this->storage()->deleteDirectory($this->directory());
+        }
+
+        return $isDeleted;
     }
 
     /**
@@ -174,7 +226,7 @@ class FeatureImageManager implements ImageManager
     /**
      * @return \Illuminate\Filesystem\FilesystemAdapter
      */
-    public function storage()
+    public function storage(): mixed
     {
         return Storage::disk($this->disk);
     }
@@ -193,9 +245,12 @@ class FeatureImageManager implements ImageManager
         if (!$this->model) {
             throw new FeatureImageException('Model not set');
         }
+
         $filename = $this->model->{$this->featureImageKey()};
+
         if ($filename && $format) {
-            $filename = Str::beforeLast($filename, '.') . "-{$format}." . Str::afterLast($filename, '.');
+            [$name, $extension] = $this->explodeFilename($filename);
+            $filename           = $name . "-{$format}." . $extension;
         }
 
         return $filename;
@@ -214,7 +269,15 @@ class FeatureImageManager implements ImageManager
             $directory = base64_encode(Str::slug($this->model->getMorphClass()) . '-' . $this->model->getKey());
         }
 
-
         return rtrim($directory, '/') . '/';
+    }
+
+    protected function explodeFilename(string $fileName): array
+    {
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        $name = Str::beforeLast($fileName, ".{$extension}");
+
+        return [$name, $extension];
     }
 }
