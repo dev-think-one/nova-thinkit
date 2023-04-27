@@ -2,6 +2,7 @@
 
 namespace NovaThinKit\Nova\Helpers;
 
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Field;
 
 class MetaFieldUpdater
@@ -18,8 +19,8 @@ class MetaFieldUpdater
     public function __construct(string $relationship, string $keyName = 'key', string $dataKeyName = 'data')
     {
         $this->relationship = $relationship;
-        $this->keyName      = $keyName;
-        $this->dataKeyName  = $dataKeyName;
+        $this->keyName = $keyName;
+        $this->dataKeyName = $dataKeyName;
     }
 
     public function field(Field $field, ?\Closure $resolve = null, ?\Closure $fill = null, ?string $computedAttribute = null): Field
@@ -28,12 +29,17 @@ class MetaFieldUpdater
             return $this->flexibleField($field);
         }
         $field
-            ->resolveUsing(function ($value, $model, $attribute) use ($resolve, $computedAttribute) {
+            ->resolveUsing(function ($value, $model, $attribute) use ($field, $resolve, $computedAttribute) {
                 $meta = $model->{$this->relationship}()->where('key', $computedAttribute ?? $attribute)->first();
                 if ($meta) {
                     if ($resolve) {
                         return call_user_func($resolve, $meta, $value, $model, $attribute);
                     }
+
+                    if ($this->fieldExpectsRawValue($field)) {
+                        return $meta->{$this->dataKeyName};
+                    }
+
                     $decoded = json_decode($meta->{$this->dataKeyName}, true);
                     if (is_array($decoded)) {
                         return $decoded;
@@ -78,5 +84,10 @@ class MetaFieldUpdater
         $field->setResolver(new \NovaThinKit\Nova\Flexible\Resolvers\MetaTableResolver($this->relationship, $this->keyName, $this->dataKeyName));
 
         return $field;
+    }
+
+    protected function fieldExpectsRawValue(Field $field): bool
+    {
+        return $field instanceof Code;
     }
 }
