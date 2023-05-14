@@ -45,6 +45,13 @@ class FeatureImageManager implements ImageManager
 
     protected ?string $column = null;
 
+    /**
+     * Fallback to display specific image if not uploaded.
+     *
+     * @var string|null
+     */
+    protected ?string $defaultPath = null;
+
     public function __construct(string $disc, array $formats = [], bool $responsive = false, array $options = [])
     {
         $this->disk       = $disc;
@@ -53,6 +60,10 @@ class FeatureImageManager implements ImageManager
 
         if (isset($options['column'])) {
             $this->column = $options['column'];
+        }
+
+        if (array_key_exists('default', $options)) {
+            $this->defaultPath = $options['default'];
         }
 
         if (isset($options['deletedFormats']) && is_array($options['deletedFormats'])) {
@@ -68,6 +79,20 @@ class FeatureImageManager implements ImageManager
             $config['responsive'] ?? false,
             $config['options']    ?? [],
         );
+    }
+
+    public function withDefaultPath(?string $defaultPath): static
+    {
+        $this->defaultPath = $defaultPath;
+
+        return $this;
+    }
+
+    public function withoutDefaultPath(): static
+    {
+        $this->defaultPath = null;
+
+        return $this;
     }
 
     public function column(?string $column): static
@@ -178,13 +203,35 @@ class FeatureImageManager implements ImageManager
     /**
      * @inheritDoc
      */
+    public function exists(?string $format = null, ?string $filename = null): bool
+    {
+        if ($format && !in_array($format, array_keys($this->formats))) {
+            $format = null;
+        }
+
+        $path = $filename ?? $this->filename($format);
+        if(!$path) {
+            return false;
+        }
+
+        return $this->storage()->exists($path);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function path(?string $format = null, ?string $filename = null): ?string
     {
         if ($format && !in_array($format, array_keys($this->formats))) {
             $format = null;
         }
 
-        return $this->storage()->path($filename ?? $this->filename($format));
+        $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
+        if(!$filename) {
+            return null;
+        }
+
+        return $this->storage()->path($filename);
     }
 
     /**
@@ -196,19 +243,31 @@ class FeatureImageManager implements ImageManager
             $format = null;
         }
 
-        return $this->storage()->url($filename ?? ($this->filename($format) ?? '_default.svg'));
+        $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
+
+        if(!$filename) {
+            return null;
+        }
+
+        return $this->storage()->url($filename);
     }
 
     /**
      * @inheritDoc
      */
-    public function download(?string $format = null, ?string $filename = null, ?string $name = null, array $headers = []): StreamedResponse
+    public function download(?string $format = null, ?string $filename = null, ?string $name = null, array $headers = []): ?StreamedResponse
     {
         if ($format && !in_array($format, array_keys($this->formats))) {
             $format = null;
         }
 
-        return $this->storage()->download(($filename ?? ($this->filename($format) ?? '_default.svg')), $name, $headers);
+        $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
+
+        if(!$filename) {
+            return null;
+        }
+
+        return $this->storage()->download($filename, $name, $headers);
     }
 
     public function setModel(Model $model): ImageManager

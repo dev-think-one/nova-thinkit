@@ -19,8 +19,8 @@ class MetaFieldUpdater
     public function __construct(string $relationship, string $keyName = 'key', string $dataKeyName = 'data')
     {
         $this->relationship = $relationship;
-        $this->keyName = $keyName;
-        $this->dataKeyName = $dataKeyName;
+        $this->keyName      = $keyName;
+        $this->dataKeyName  = $dataKeyName;
     }
 
     public function field(Field $field, ?\Closure $resolve = null, ?\Closure $fill = null, ?string $computedAttribute = null): Field
