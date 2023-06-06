@@ -323,7 +323,7 @@ class FeatureImageManager implements ImageManager
 
 
         if (method_exists($this->model, 'featureImageManagerDirectory')) {
-            $directory = $this->model->featureImageManagerDirectory();
+            $directory = $this->model->featureImageManagerDirectory($this->column);
         } else {
             $directory = base64_encode(Str::slug($this->model->getMorphClass()) . '-' . $this->model->getKey());
         }
