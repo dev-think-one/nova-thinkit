@@ -50,6 +50,21 @@ public function actions(NovaRequest $request)
 
 ### Filters
 
+#### Dynamic Boolean filter
+
+```php
+DynamicBooleanFilter::make([
+    'Active' => 'active',
+    'Paused' => 'paused',
+]  /* options */, 'status' /* column to filter */, 'Status'  /* title */),
+```
+
+Useful with HumanReadable enums:
+
+```php
+DynamicBooleanFilter::make(array_flip(CompanyStatus::options()), 'status', 'Status'),
+```
+
 #### BelongsTo filter
 
 Filter by related belongsTo relation.
