@@ -2,7 +2,7 @@
 
 return [
     'nullable-field' => [
-        'empty' => 'Empt\y',
+        'empty'  => 'Empt\y',
         'filled' => 'Filled',
     ],
 ];
