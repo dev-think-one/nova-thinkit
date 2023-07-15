@@ -191,13 +191,7 @@ class FeatureImageManager implements ImageManager
             }
         }
 
-        $isDeleted =  $this->storage()->delete(array_unique($filesToDelete));
-
-        if(empty($this->storage()->files($this->directory()))) {
-            $this->storage()->deleteDirectory($this->directory());
-        }
-
-        return $isDeleted;
+        return $this->storage()->delete(array_unique($filesToDelete));
     }
 
     /**

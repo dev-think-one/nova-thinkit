@@ -131,7 +131,7 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
         if (!$this->featureImageManager) {
             $this->featureImageManager = FeatureImageManager::fromConfig([
                 'disk'                 => 'feature-images',
-                'immutable_extensions' => [ '.svg', '.gif' ],
+                'immutableExtensions' => [ '.svg', '.gif' ],
                 'original'             => [
                     'methods' => [
                         'fit'      => [ \Spatie\Image\Manipulations::FIT_CROP, 2800, 1800 ],

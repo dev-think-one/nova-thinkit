@@ -4,7 +4,7 @@ return [
     'feature-images'   => [
         'default' => [
             'disk'                 => 'feature-images',
-            'immutable_extensions' => [ '.svg', '.gif' ],
+            'immutableExtensions' => [ '.svg', '.gif' ],
             'original'             => [
                 'methods' => [
                     'fit'      => [ \Spatie\Image\Manipulations::FIT_CROP, 2800, 1800 ],
