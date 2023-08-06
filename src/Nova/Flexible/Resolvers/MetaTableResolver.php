@@ -3,11 +3,11 @@
 namespace NovaThinKit\Nova\Flexible\Resolvers;
 
 use Illuminate\Support\Collection;
-use NovaFlexibleContent\Contracts\ResolverInterface;
-use NovaFlexibleContent\Layouts\GroupsCollection;
-use NovaFlexibleContent\Layouts\LayoutsCollection;
+use NovaFlexibleContent\Layouts\Collections\GroupsCollection;
+use NovaFlexibleContent\Layouts\Collections\LayoutsCollection;
+use NovaFlexibleContent\Value\Resolver;
 
-class MetaTableResolver implements ResolverInterface
+class MetaTableResolver implements Resolver
 {
     protected string $relationship;
     protected string $keyName;
