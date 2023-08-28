@@ -126,9 +126,9 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
     }
     
     // Optionally you can change default image-manager
-    public function featureImageManager(?string $tag = null): ImageManager
+    protected function createFeatureImageManager(?string $tag = null): ImageManager
     {
-        if (!$this->featureImageManager) {
+    if (!$this->featureImageManager) {
             $this->featureImageManager = FeatureImageManager::fromConfig([
                 'disk'                 => 'feature-images',
                 'immutableExtensions' => [ '.svg', '.gif' ],
@@ -156,8 +156,7 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
             $this->featureImageManager->disk = 'baz';
         }
 
-        return $this->featureImageManager
-            ->setModel($this);
+        return $this->featureImageManager;
     }
 }
 ```

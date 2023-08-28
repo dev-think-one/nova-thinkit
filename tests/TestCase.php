@@ -19,6 +19,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         Storage::fake();
         Storage::fake('baz');
+        Storage::fake('feature-images');
 
         Artisan::call('nova:publish');
     }

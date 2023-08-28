@@ -11,27 +11,29 @@ trait HasFeatureImage
 {
     protected ?ImageManager $featureImageManager = null;
 
-
-    public function featureImageManager(?string $tag = null): ImageManager
+    protected function createFeatureImageManager(?string $tag = null): ImageManager
     {
         if (!$this->featureImageManager) {
             $featureImageManagerConfig = property_exists($this, 'featureImageManagerConfig') ? $this->featureImageManagerConfig : 'nova-thinkit.feature-images.default';
             $this->featureImageManager = FeatureImageManager::fromConfig(config($featureImageManagerConfig));
         }
 
-        return $this->featureImageManager
+        return $this->featureImageManager;
+    }
+
+    public function featureImageManager(?string $tag = null): ImageManager
+    {
+        return $this->createFeatureImageManager($tag)
+            ->setTag($tag)
             ->setModel($this);
     }
+
 
     public function featureImageManagerDirectory(): string
     {
         $class = $this->getMorphClass();
-        if (Str::contains($class, '\\')) {
-            $path = explode('\\', $class);
-            $path = array_pop($path);
-        } else {
-            $path = $class;
-        }
+
+        $path = Str::contains($class, '\\') ? class_basename($class) : $class;
 
         return base64_encode($path . '-' . $this->getKey());
     }

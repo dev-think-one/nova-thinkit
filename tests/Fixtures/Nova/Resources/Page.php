@@ -21,7 +21,7 @@ class Page extends Resource
     {
         return [
             Text::make('Title', 'title'),
-            $this->fieldFeatureImage('Image', 'baz_image'),
+            $this->fieldFeatureImage('Image', 'fooBar'),
         ];
     }
 }

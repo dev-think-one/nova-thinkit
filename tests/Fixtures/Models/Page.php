@@ -22,11 +22,14 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
 
     public function featureImageKey(?string $tag = null)
     {
-        return $tag ?: 'image';
+        if ($tag === 'fooBar') {
+            return 'baz_image';
+        }
+
+        return 'image';
     }
 
-    // Optionally you can change default image-manager
-    public function featureImageManager(?string $tag = null): ImageManager
+    protected function createFeatureImageManager(?string $tag = null): ImageManager
     {
         if (!$this->featureImageManager) {
             $this->featureImageManager = FeatureImageManager::fromConfig([
@@ -53,12 +56,11 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
             ]);
         }
 
-        if ($tag === 'baz_image') {
+        if ($tag === 'fooBar') {
             $this->featureImageManager->disk = 'baz';
         }
 
-        return $this->featureImageManager
-            ->setModel($this);
+        return $this->featureImageManager;
     }
 
     protected static function newFactory(): PageFactory

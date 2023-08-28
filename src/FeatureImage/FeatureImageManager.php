@@ -5,6 +5,7 @@ namespace NovaThinKit\FeatureImage;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Image\Image;
@@ -52,6 +53,8 @@ class FeatureImageManager implements ImageManager
      */
     protected ?string $defaultPath = null;
 
+    protected ?string $tag = null;
+
     public function __construct(string $disc, array $formats = [], bool $responsive = false, array $options = [])
     {
         $this->disk       = $disc;
@@ -77,7 +80,11 @@ class FeatureImageManager implements ImageManager
             $config['disk'],
             $config['formats']    ?? [],
             $config['responsive'] ?? false,
-            array_merge($config['options'] ?? [], $config),
+            array_merge($config['options'] ?? [], Arr::except($config, [
+                'disk',
+                'formats',
+                'responsive',
+            ])),
         );
     }
 
@@ -264,6 +271,13 @@ class FeatureImageManager implements ImageManager
         return $this->storage()->download($filename, $name, $headers);
     }
 
+    public function setTag(?string $tag = null): ImageManager
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
     public function setModel(Model $model): ImageManager
     {
         $this->model = $model;
@@ -290,7 +304,7 @@ class FeatureImageManager implements ImageManager
             throw new FeatureImageException('Model not set');
         }
 
-        return method_exists($this->model, 'featureImageKey') ? $this->model->featureImageKey($this->column) : ($this->column ?? 'image');
+        return method_exists($this->model, 'featureImageKey') ? $this->model->featureImageKey($this->tag) : ($this->column ?? 'image');
     }
 
     protected function filename(?string $format = null): ?string
