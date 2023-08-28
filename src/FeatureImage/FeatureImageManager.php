@@ -77,7 +77,7 @@ class FeatureImageManager implements ImageManager
             $config['disk'],
             $config['formats']    ?? [],
             $config['responsive'] ?? false,
-            $config['options']    ?? [],
+            array_merge($config['options'] ?? [], $config),
         );
     }
 
@@ -183,7 +183,7 @@ class FeatureImageManager implements ImageManager
         }
 
         foreach ($this->storage()->files($this->directory()) as $file) {
-            if(
+            if (
                 ($suffix = Str::between($file, "{$name}-", ".{$extension}")) &&
                 is_numeric($suffix)
             ) {
@@ -204,7 +204,7 @@ class FeatureImageManager implements ImageManager
         }
 
         $path = $filename ?? $this->filename($format);
-        if(!$path) {
+        if (!$path) {
             return false;
         }
 
@@ -221,7 +221,7 @@ class FeatureImageManager implements ImageManager
         }
 
         $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
-        if(!$filename) {
+        if (!$filename) {
             return null;
         }
 
@@ -239,7 +239,7 @@ class FeatureImageManager implements ImageManager
 
         $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
 
-        if(!$filename) {
+        if (!$filename) {
             return null;
         }
 
@@ -257,7 +257,7 @@ class FeatureImageManager implements ImageManager
 
         $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
 
-        if(!$filename) {
+        if (!$filename) {
             return null;
         }
 
