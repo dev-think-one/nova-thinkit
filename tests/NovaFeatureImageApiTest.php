@@ -31,7 +31,7 @@ class NovaFeatureImageApiTest extends TestCase
 
         $response = $this->put("nova-api/{$uriKey}/{$post->getKey()}", [
             'title'     => 'Foo title',
-            'image' => UploadedFile::fake()->image('avatar.jpg'),
+            'image'     => UploadedFile::fake()->image('avatar.jpg'),
         ]);
 
         $this->assertEquals($post->getKey(), $response->json('resource.id'));
@@ -49,7 +49,7 @@ class NovaFeatureImageApiTest extends TestCase
         // Upload again
         $response = $this->put("nova-api/{$uriKey}/{$post->getKey()}", [
             'title'     => 'Foo 2',
-            'image' => UploadedFile::fake()->image('avatar2.jpg'),
+            'image'     => UploadedFile::fake()->image('avatar2.jpg'),
         ]);
         $this->assertEquals($post->getKey(), $response->json('resource.id'));
         $this->assertEquals('Foo 2', $response->json('resource.title'));

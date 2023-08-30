@@ -68,7 +68,7 @@ class MetaTableResolver implements Resolver
 
         return array_filter(array_map(function ($item) {
             $layoutValue = new LayoutValue(!is_array($item) ? (array)$item : $item);
-            if($layoutValue->layout && $layoutValue->key && $layoutValue->attributes) {
+            if ($layoutValue->layout && $layoutValue->key && is_array($layoutValue->attributes)) {
                 return $layoutValue;
             }
 
