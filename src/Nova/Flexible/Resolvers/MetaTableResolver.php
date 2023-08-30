@@ -32,14 +32,15 @@ class MetaTableResolver implements Resolver
         if ($meta) {
             $value = static::extractValueFromResource($meta, $this->dataKeyName);
 
-            return GroupsCollection::make($value)->map(function ($item) use ($groups) {
+            return GroupsCollection::make($value)->map(function (LayoutValue $item) use ($groups) {
                 $layout = $groups->find($item->layout);
 
                 if (!$layout) {
                     throw new \Exception("Layout [{$item->layout}] not found");
                 }
 
-                return $layout->duplicate($item->key, (array)$item->attributes);
+                return $layout->duplicate($item->key, (array)$item->attributes)
+                    ->setCollapsed((bool)$item->collapsed);
             })->filter()->values();
         }
 
@@ -85,6 +86,7 @@ class MetaTableResolver implements Resolver
             [$this->keyName => $attribute],
             [$this->dataKeyName => $groups->map(function ($group) {
                 return [
+                    'collapsed'  => $group->isCollapsed(),
                     'layout'     => $group->name(),
                     'key'        => $group->key(),
                     'attributes' => $group->getAttributes(),
