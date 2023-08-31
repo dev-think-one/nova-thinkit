@@ -13,6 +13,8 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
     use \NovaThinKit\FeatureImage\Models\HasFeatureImage;
     use HasFactory;
 
+    protected $guarded = [];
+
     // Optionally you can change default storage directory
     public function featureImageManagerDirectory(): string
     {
