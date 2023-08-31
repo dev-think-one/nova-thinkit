@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use NovaThinKit\FeatureImage\Models\WithFeatureImage;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -16,9 +17,9 @@ class FeatureImageManager implements ImageManager
 {
     /**
      * Files storage disk
-     * @var string
+     * @var string|null
      */
-    public string $disk;
+    public ?string $disk;
 
     /**
      * Predefined formats
@@ -40,11 +41,9 @@ class FeatureImageManager implements ImageManager
 
     /**
      * Filename
-     * @var Model|null
+     * @var WithFeatureImage|null
      */
-    public ?Model $model = null;
-
-    protected ?string $column = null;
+    public ?WithFeatureImage $model = null;
 
     /**
      * Fallback to display specific image if not uploaded.
@@ -55,14 +54,15 @@ class FeatureImageManager implements ImageManager
 
     protected ?string $tag = null;
 
-    public function __construct(string $disc, array $formats = [], bool $responsive = false, array $options = [])
+    public function __construct(?string $disc = null, array $formats = [], bool $responsive = false, array $options = [])
     {
         $this->disk       = $disc;
         $this->formats    = $formats;
         $this->responsive = $responsive;
 
+        /** @deprecated */
         if (isset($options['column'])) {
-            $this->column = $options['column'];
+            $this->tag = $options['column'];
         }
 
         if (array_key_exists('default', $options)) {
@@ -77,15 +77,21 @@ class FeatureImageManager implements ImageManager
     public static function fromConfig(array $config): static
     {
         return new static(
-            $config['disk'],
+            $config['disk']       ?? null,
             $config['formats']    ?? [],
             $config['responsive'] ?? false,
+            // TODO: $config['options'] should not be present on config anymore
             array_merge($config['options'] ?? [], Arr::except($config, [
                 'disk',
                 'formats',
                 'responsive',
             ])),
         );
+    }
+
+    public function tag(): ?string
+    {
+        return $this->tag;
     }
 
     public function withDefaultPath(?string $defaultPath): static
@@ -101,14 +107,6 @@ class FeatureImageManager implements ImageManager
 
         return $this;
     }
-
-    public function column(?string $column): static
-    {
-        $this->column = $column;
-
-        return $this;
-    }
-
 
     /**
      * @inheritDoc
@@ -278,14 +276,14 @@ class FeatureImageManager implements ImageManager
         return $this;
     }
 
-    public function setModel(Model $model): ImageManager
+    public function setModel(WithFeatureImage $model): ImageManager
     {
         $this->model = $model;
 
         return $this;
     }
 
-    public function getModel(): ?string
+    public function getModel(): ?WithFeatureImage
     {
         return $this->model;
     }
@@ -300,20 +298,12 @@ class FeatureImageManager implements ImageManager
 
     protected function featureImageKey(): string
     {
-        if (!$this->model) {
-            throw new FeatureImageException('Model not set');
-        }
-
-        return method_exists($this->model, 'featureImageKey') ? $this->model->featureImageKey($this->tag) : ($this->column ?? 'image');
+        return ($this->model && method_exists($this->model, 'featureImageKey')) ? $this->model->featureImageKey($this->tag) : 'image';
     }
 
     protected function filename(?string $format = null): ?string
     {
-        if (!$this->model) {
-            throw new FeatureImageException('Model not set');
-        }
-
-        $filename = $this->model->{$this->featureImageKey()};
+        $filename = $this->model?->{$this->featureImageKey()};
 
         if ($filename && $format) {
             [$name, $extension] = $this->explodeFilename($filename);
@@ -325,15 +315,12 @@ class FeatureImageManager implements ImageManager
 
     protected function directory(): string
     {
-        if (!$this->model) {
-            throw new FeatureImageException('Model not set');
-        }
-
-
-        if (method_exists($this->model, 'featureImageManagerDirectory')) {
-            $directory = $this->model->featureImageManagerDirectory($this->column);
-        } else {
+        if ($this->model && method_exists($this->model, 'featureImageManagerDirectory')) {
+            $directory = $this->model->featureImageManagerDirectory($this->tag);
+        } elseif ($this->model && ($this->model instanceof Model)) {
             $directory = base64_encode(Str::slug($this->model->getMorphClass()) . '-' . $this->model->getKey());
+        } else {
+            $directory = '';
         }
 
         return rtrim($directory, '/') . '/';

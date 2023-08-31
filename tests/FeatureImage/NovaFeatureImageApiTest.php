@@ -1,12 +1,13 @@
 <?php
 
-namespace NovaThinKit\Tests;
+namespace NovaThinKit\Tests\FeatureImage;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use NovaThinKit\Tests\Fixtures\Models\Page;
 use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\Fixtures\Models\User;
+use NovaThinKit\Tests\TestCase;
 
 class NovaFeatureImageApiTest extends TestCase
 {

@@ -16,13 +16,13 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
     protected $guarded = [];
 
     // Optionally you can change default storage directory
-    public function featureImageManagerDirectory(): string
+    public function featureImageManagerDirectory(?string $tag = null): string
     {
         return 'foo-page/' . $this->getKey();
     }
 
 
-    public function featureImageKey(?string $tag = null)
+    public function featureImageKey(?string $tag = null): string
     {
         if ($tag === 'fooBar') {
             return 'baz_image';
@@ -54,7 +54,6 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
                         'srcset'  => '450w',
                     ],
                 ],
-                'column' => 'baz_image',
             ]);
         }
 

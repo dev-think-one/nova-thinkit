@@ -29,12 +29,17 @@ trait HasFeatureImage
     }
 
 
-    public function featureImageManagerDirectory(): string
+    public function featureImageManagerDirectory(?string $tag = null): string
     {
         $class = $this->getMorphClass();
 
         $path = Str::contains($class, '\\') ? class_basename($class) : $class;
 
         return base64_encode($path . '-' . $this->getKey());
+    }
+
+    public function featureImageKey(?string $tag = null): string
+    {
+        return $tag ?: 'image';
     }
 }
