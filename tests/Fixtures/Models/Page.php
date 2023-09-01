@@ -44,7 +44,9 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
                     ],
                     'srcset'  => '2800w',
                 ],
-                'deletedFormats'       => [],
+                'deletedFormats'       => [
+                    'del',
+                ],
                 'formats'              => [
                     'thumb' => [
                         'methods' => [
@@ -58,7 +60,8 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
         }
 
         if ($tag === 'fooBar') {
-            $this->featureImageManager->disk = 'baz';
+            $this->featureImageManager->disk       = 'baz';
+            $this->featureImageManager->responsive = true;
         }
 
         return $this->featureImageManager;

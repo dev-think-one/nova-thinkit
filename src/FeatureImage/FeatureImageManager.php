@@ -79,7 +79,7 @@ class FeatureImageManager implements ImageManager
         return new static(
             $config['disk']       ?? null,
             $config['formats']    ?? [],
-            $config['responsive'] ?? false,
+            (bool)($config['responsive'] ?? false),
             // TODO: $config['options'] should not be present on config anymore
             array_merge($config['options'] ?? [], Arr::except($config, [
                 'disk',
