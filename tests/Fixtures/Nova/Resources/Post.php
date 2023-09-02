@@ -6,6 +6,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
 use NovaThinKit\Nova\Filters\BelongsToFilter;
+use NovaThinKit\Nova\Filters\BelongsToManyFilter;
 
 /**
  * @extends Resource<\NovaThinKit\Tests\Fixtures\Models\Post>
@@ -32,6 +33,9 @@ class Post extends Resource
             BelongsToFilter::make('contact')
                 ->setTitleKeyName('email')
                 ->setFilterName('By user'),
+            BelongsToManyFilter::make('tags')
+                ->setTitleKeyName('name')
+                ->setFilterName('By tag'),
         ];
     }
 }

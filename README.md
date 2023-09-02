@@ -115,6 +115,21 @@ public function filters(NovaRequest $request)
 }
 ```
 
+#### BelongsToMany filter
+
+Filter by related belongsToMany relation.
+
+```php
+public function filters(NovaRequest $request)
+{
+    return [
+       \NovaThinKit\Nova\Filters\BelongsToManyFilter::make('tags')
+                ->setTitleKeyName('name' /* label key name */)
+                ->setFilterName('By tag'),
+    ];
+}
+```
+
 ### Metadata table
 
 #### MetaFieldUpdater
