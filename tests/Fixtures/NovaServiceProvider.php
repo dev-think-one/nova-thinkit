@@ -5,6 +5,7 @@ namespace NovaThinKit\Tests\Fixtures;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
+use NovaThinKit\Tests\Fixtures\Nova\Resources\Contact;
 use NovaThinKit\Tests\Fixtures\Nova\Resources\Page;
 use NovaThinKit\Tests\Fixtures\Nova\Resources\Post;
 
@@ -59,6 +60,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         Nova::resources([
             Post::class,
             Page::class,
+            Contact::class,
         ]);
     }
 }
