@@ -2,6 +2,7 @@
 
 namespace NovaThinKit\Tests\Fixtures\Nova\Resources;
 
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\Email;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -31,8 +32,13 @@ class Contact extends Resource
     public function actions(NovaRequest $request)
     {
         return [
-            LoginToDifferentGuard::make('http://me.bar', 'web', 'Foo', 'Bar baz'),
+            LoginToDifferentGuard::make('http://me.bar', 'contact_web', 'Foo', 'Bar baz'),
             SendResetPasswordEmail::make('contacts', 'Baz', 'Qux quix'),
+
+            LoginToDifferentGuard::make('http://other.bar', 'contact_web')
+            ->findIdUsing(function (Model $model) {
+                return $model->getKey();
+            }),
         ];
     }
 }

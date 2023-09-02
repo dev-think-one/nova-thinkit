@@ -37,7 +37,7 @@ class SendResetPasswordEmailTest extends TestCase
         $response = $this->get("nova-api/{$uriKey}/actions");
 
         $this->assertIsArray($response->json('actions'));
-        $this->assertCount(2, $response->json('actions'));
+        $this->assertCount(3, $response->json('actions'));
 
         $action = $response->json('actions')[1];
 

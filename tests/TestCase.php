@@ -84,6 +84,17 @@ class TestCase extends \Orchestra\Testbench\TestCase
                 ],
             ]
         ));
+
+        $app['config']->set('auth.guards', array_merge(
+            $app['config']->get('auth.guards'),
+            [
+                'contact_web' => [
+                    'driver'   => 'session',
+                    'provider' => 'contacts',
+                ],
+            ]
+        ));
+
         // $app['config']->set('nova-thinkit.some_key', 'some_value');
     }
 }

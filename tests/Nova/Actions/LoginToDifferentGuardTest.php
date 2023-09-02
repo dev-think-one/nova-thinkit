@@ -2,6 +2,8 @@
 
 namespace NovaThinKit\Tests\Nova\Actions;
 
+use Laravel\Nova\Actions\ActionResponse;
+use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use NovaThinKit\Nova\Actions\LoginToDifferentGuard;
 use NovaThinKit\Tests\Fixtures\Models\Contact;
@@ -33,7 +35,7 @@ class LoginToDifferentGuardTest extends TestCase
         $response = $this->get("nova-api/{$uriKey}/actions");
 
         $this->assertIsArray($response->json('actions'));
-        $this->assertCount(2, $response->json('actions'));
+        $this->assertCount(3, $response->json('actions'));
 
         $action = $response->json('actions')[0];
 
@@ -58,5 +60,63 @@ class LoginToDifferentGuardTest extends TestCase
         $htmlFiled->resolve($contact);
         $this->assertEquals($action['confirmText'], $htmlFiled->value);
         $this->assertEquals('Bar baz', $htmlFiled->value);
+    }
+
+    /** @test */
+    public function handle()
+    {
+        Contact::factory()->count(12)->create();
+        $contact = Contact::factory()->create();
+
+        $uriKey          = \NovaThinKit\Tests\Fixtures\Nova\Resources\Contact::uriKey();
+        $contactResource = new \NovaThinKit\Tests\Fixtures\Nova\Resources\Contact($contact);
+        /** @var LoginToDifferentGuard $resourceAction */
+        $resourceAction = $contactResource->actions(app(NovaRequest::class))[0];
+
+        $this->assertGuest('contact_web');
+        $response = $this->post("nova-api/{$uriKey}/action?action={$resourceAction->uriKey()}", [
+            'resources' => $contact->getKey(),
+        ]);
+        $this->assertAuthenticated('contact_web');
+
+        $this->assertEquals('http://me.bar', $response->json('openInNewTab'));
+    }
+
+    /** @test */
+    public function handle_callback_function()
+    {
+        Contact::factory()->count(12)->create();
+        $contact = Contact::factory()->create();
+
+        $uriKey          = \NovaThinKit\Tests\Fixtures\Nova\Resources\Contact::uriKey();
+        $contactResource = new \NovaThinKit\Tests\Fixtures\Nova\Resources\Contact($contact);
+        /** @var LoginToDifferentGuard $resourceAction */
+        $resourceAction = $contactResource->actions(app(NovaRequest::class))[2];
+
+        $this->assertGuest('contact_web');
+        $response = $this->post("nova-api/{$uriKey}/action?action={$resourceAction->uriKey()}", [
+            'resources' => $contact->getKey(),
+        ]);
+        $this->assertAuthenticated('contact_web');
+
+        $this->assertEquals('http://other.bar', $response->json('openInNewTab'));
+    }
+
+    /** @test */
+    public function handle_no_model()
+    {
+        app('config')->set('auth.providers.contacts.model', \Illuminate\Foundation\Auth\User::class);
+
+        Contact::factory()->count(12)->create();
+        $contact = Contact::factory()->create();
+
+        $contactResource = new \NovaThinKit\Tests\Fixtures\Nova\Resources\Contact($contact);
+        /** @var LoginToDifferentGuard $resourceAction */
+        $resourceAction = $contactResource->actions(app(NovaRequest::class))[0];
+
+        /** @var ActionResponse $result */
+        $result = $resourceAction->handle(new ActionFields(collect(), collect()), collect());
+
+        $this->assertEquals('Something went wrong! User not found.', $result->jsonSerialize()['danger']);
     }
 }
