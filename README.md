@@ -105,6 +105,7 @@ use NovaThinKit\Nova\Filters\BelongsToFilter;
 public function filters(NovaRequest $request)
 {
     return [
+        // type - this is belongsTo() relation method name
         new BelongsToFilter('type'),
         // or
         (new BelongsToFilter('type'))->setTitleKeyName('title'),
