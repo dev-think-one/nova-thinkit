@@ -18,6 +18,11 @@ class Contact extends \Illuminate\Foundation\Auth\User implements \NovaThinKit\F
         return $this->hasMany(Post::class, 'contact_id', 'id');
     }
 
+    public function meta(): HasMany
+    {
+        return $this->hasMany(ContactMeta::class, 'contact_id', 'id');
+    }
+
     protected static function newFactory(): ContactFactory
     {
         return ContactFactory::new();

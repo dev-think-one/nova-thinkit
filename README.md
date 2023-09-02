@@ -134,13 +134,17 @@ public function filters(NovaRequest $request)
 
 #### MetaFieldUpdater
 
-If you have standalone table what contains metavalues. You can use `MetaFieldUpdater`
+If you have standalone table what contains meta values. You can use `MetaFieldUpdater`
 to quicker update these values from main resource:
 
 ```php
 public function fields(NovaRequest $request)
 {
-    $metaFieldUpdater = new \NovaThinKit\Nova\Helpers\MetaFieldUpdater('metaData', 'key', 'data');
+    $metaFieldUpdater = new \NovaThinKit\Nova\Helpers\MetaFieldUpdater(
+        'metaData' /* hasMany relation method name */,
+        'key' /* key name in neta table */,
+        'value' /* data name in neta table */
+    );
 
     return [
         $metaFieldUpdater->field(
