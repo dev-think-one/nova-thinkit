@@ -77,8 +77,8 @@ class FeatureImageManager implements ImageManager
     public static function fromConfig(array $config): static
     {
         return new static(
-            $config['disk']       ?? null,
-            $config['formats']    ?? [],
+            $config['disk']    ?? null,
+            $config['formats'] ?? [],
             (bool)($config['responsive'] ?? false),
             // TODO: $config['options'] should not be present on config anymore
             array_merge($config['options'] ?? [], Arr::except($config, [
@@ -226,11 +226,8 @@ class FeatureImageManager implements ImageManager
         }
 
         $filename = $filename ?? ($this->filename($format) ?? $this->defaultPath);
-        if (!$filename) {
-            return null;
-        }
 
-        return $this->storage()->path($filename);
+        return $filename ? $this->storage()->path($filename) : null;
     }
 
     /**
@@ -296,12 +293,12 @@ class FeatureImageManager implements ImageManager
         return Storage::disk($this->disk);
     }
 
-    protected function featureImageKey(): string
+    public function featureImageKey(): string
     {
         return ($this->model && method_exists($this->model, 'featureImageKey')) ? $this->model->featureImageKey($this->tag) : 'image';
     }
 
-    protected function filename(?string $format = null): ?string
+    public function filename(?string $format = null): ?string
     {
         $filename = $this->model?->{$this->featureImageKey()};
 
@@ -313,7 +310,7 @@ class FeatureImageManager implements ImageManager
         return $filename;
     }
 
-    protected function directory(): string
+    public function directory(): string
     {
         if ($this->model && method_exists($this->model, 'featureImageManagerDirectory')) {
             $directory = $this->model->featureImageManagerDirectory($this->tag);

@@ -4,8 +4,12 @@ namespace NovaThinKit\Tests\FeatureImage;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use NovaThinKit\FeatureImage\FeatureImageManager;
+use NovaThinKit\Tests\Fixtures\AdvertisingDTO;
 use NovaThinKit\Tests\Fixtures\Models\Page;
+use NovaThinKit\Tests\Fixtures\Models\Post;
+use NovaThinKit\Tests\Fixtures\Models\PostWithoutTrait;
 use NovaThinKit\Tests\TestCase;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -134,6 +138,25 @@ class FeatureImageManagerTest extends TestCase
     }
 
     /** @test */
+    public function path_function()
+    {
+        /** @var Page $page */
+        $page = Page::factory()->create();
+
+        /** @var FeatureImageManager $manager */
+        $manager = $page->featureImageManager('fooBar');
+
+        $page->{$page->featureImageKey('fooBar')} = $manager->storeUploaded(UploadedFile::fake()->image('image.jpg'));
+        $page->save();
+
+        $this->assertNotEmpty($manager->path());
+        $this->assertNotEmpty($manager->path('thumb'));
+        $this->assertEquals($manager->path(), $manager->path(1200));
+        $this->assertNotEquals($manager->path(), $manager->path('thumb'));
+
+    }
+
+    /** @test */
     public function download_function()
     {
         /** @var Page $page */
@@ -163,5 +186,28 @@ class FeatureImageManagerTest extends TestCase
 
         $this->assertInstanceOf($page::class, $manager->getModel());
         $this->assertEquals($page->getKey(), $manager->getModel()->getKey());
+    }
+
+    /** @test */
+    public function directory_function()
+    {
+        /** @var Page $page */
+        $page = Page::factory()->create();
+        /** @var FeatureImageManager $manager */
+        $manager = $page->featureImageManager('fooBar');
+        $this->assertEquals($page->featureImageManagerDirectory('fooBar') . '/', $manager->directory());
+
+        /** @var Post $post */
+        $post = Post::factory()->create();
+        $post = PostWithoutTrait::query()->find($post->getKey());
+        /** @var FeatureImageManager $manager */
+        $manager = $post->featureImageManager();
+        $this->assertEquals(base64_encode(Str::slug($post->getMorphClass()) . '-' . $post->getKey()) . '/', $manager->directory());
+
+
+        $advertisingDTO = new AdvertisingDTO();
+        /** @var FeatureImageManager $manager */
+        $manager = $advertisingDTO->featureImageManager();
+        $this->assertEquals('/', $manager->directory());
     }
 }
