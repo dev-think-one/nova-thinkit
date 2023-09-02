@@ -29,12 +29,10 @@ php artisan vendor:publish --provider="NovaThinKit\ServiceProvider" --tag="lang"
 #### Login to different guard
 
 ```php
-use NovaThinKit\Nova\Actions\LoginToDifferentGuard;
-
 public function actions(NovaRequest $request)
 {
     return [
-        (new LoginToDifferentGuard(
+        (new \NovaThinKit\Nova\Actions\LoginToDifferentGuard(
             route('dashboard.overview'),
             'owners_web',
             __('Login to owner dashboard'),
@@ -48,21 +46,53 @@ public function actions(NovaRequest $request)
 }
 ```
 
+#### Send reset password notification
+
+```php
+use NovaThinKit\Nova\Actions\LoginToDifferentGuard;
+
+public function actions(NovaRequest $request)
+{
+    return [
+    ( \NovaThinKit\Nova\Actions\SendResetPasswordEmail::make('contacts', __('Send reset password'), __('Are you sure you want to continue?')))
+            // optional callback how to find correct user
+            ->findIdUsing(fn (Contact $model) => Owner::query()->where('contact_id', $model->getKey())->first()?->getKey())
+            // other default method actions...
+            ->canRun(fn ($request, Contact $model) => $model->role === "owner"),
+    ];
+}
+```
+
 ### Filters
 
 #### Dynamic Boolean filter
 
 ```php
-DynamicBooleanFilter::make([
+\NovaThinKit\Nova\Filters\DynamicBooleanFilter::make([
     'Active' => 'active',
     'Paused' => 'paused',
 ]  /* options */, 'status' /* column to filter */, 'Status'  /* title */),
+
+// Useful with HumanReadable enums:
+\NovaThinKit\Nova\Filters\DynamicBooleanFilter::make(array_flip(CompanyStatus::options()), 'status', 'Status'),
 ```
 
-Useful with HumanReadable enums:
+Use filter for relation. For example add filter to Author to filter Posts:
 
 ```php
-DynamicBooleanFilter::make(array_flip(CompanyStatus::options()), 'status', 'Status'),
+\NovaThinKit\Nova\Filters\DynamicBooleanFilter::make(array_flip(CompanyStatus::options()), 'status', 'Posts Status')->forRelation('posts'),
+```
+
+#### Empty or null filed filter
+
+```php
+\NovaThinKit\Nova\Filters\EmptyFieldFilter::make('post_title' /* column to filter */, 'Title'  /* title */),
+```
+
+Use filter for relation. For example add filter to Author to filter Posts:
+
+```php
+\NovaThinKit\Nova\Filters\EmptyFieldFilter::make('posts.post_title', 'Posts Title'),
 ```
 
 #### BelongsTo filter

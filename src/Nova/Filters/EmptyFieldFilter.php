@@ -20,7 +20,7 @@ class EmptyFieldFilter extends BooleanFilter
 
     public function apply(NovaRequest $request, $query, $value)
     {
-        if ($value['empty'] && $value['filled']) {
+        if (($value['empty'] ?? false) && ($value['filled'] ?? false)) {
             return $query;
         }
 
@@ -45,8 +45,8 @@ class EmptyFieldFilter extends BooleanFilter
     public function options(NovaRequest $request): array
     {
         return [
-            trans('nova-thinkit::filter.nullable-field.empty')   => 'empty',
-            trans('nova-thinkit::filter.nullable-field.filled')  => 'filled',
+            trans('nova-thinkit::filter.nullable-field.empty')  => 'empty',
+            trans('nova-thinkit::filter.nullable-field.filled') => 'filled',
         ];
     }
 

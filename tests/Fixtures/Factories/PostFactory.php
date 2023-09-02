@@ -16,7 +16,22 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->unique()->word(),
+            'title'  => $this->faker->unique()->word(),
+            'status' => 'draft',
         ];
+    }
+
+    public function published(): static
+    {
+        return $this->state([
+            'status' => 'published',
+        ]);
+    }
+
+    public function content(?string $content = null): static
+    {
+        return $this->state([
+            'content' => $content,
+        ]);
     }
 }

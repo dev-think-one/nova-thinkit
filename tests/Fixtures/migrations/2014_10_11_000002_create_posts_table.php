@@ -14,8 +14,12 @@ return new class extends Migration {
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('contact_id')->nullable()
+                ->constrained('contacts', 'id');
             $table->string('title');
+            $table->string('content')->nullable();
             $table->string('image')->nullable();
+            $table->string('status')->default('draft');
             $table->timestamps();
         });
     }

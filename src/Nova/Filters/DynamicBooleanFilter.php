@@ -3,9 +3,9 @@
 namespace NovaThinKit\Nova\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Nova\Filters\BooleanFilter;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 
 class DynamicBooleanFilter extends BooleanFilter
@@ -31,7 +31,7 @@ class DynamicBooleanFilter extends BooleanFilter
         $this->name        = $name ?: Nova::humanize($fieldName);
     }
 
-    public function apply(Request $request, $query, $value)
+    public function apply(NovaRequest $request, $query, $value)
     {
         $values = array_keys(array_filter($value));
         if (count($values) > 0) {
@@ -46,7 +46,7 @@ class DynamicBooleanFilter extends BooleanFilter
         }
     }
 
-    public function options(Request $request)
+    public function options(NovaRequest $request): array
     {
         return $this->optionsData;
     }
