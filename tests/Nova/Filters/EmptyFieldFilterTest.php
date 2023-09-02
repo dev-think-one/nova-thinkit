@@ -78,14 +78,14 @@ class EmptyFieldFilterTest extends TestCase
         $filter->apply(app(NovaRequest::class), $query, [
             'empty' => true,
         ]);
-        $this->assertEquals(2, $query->count());
+        $this->assertEquals(1, $query->count());
 
         $query = Contact::query();
         $filter->apply(app(NovaRequest::class), $query, [
             'empty'  => false,
             'filled' => true,
         ]);
-        $this->assertEquals(1, $query->count());
+        $this->assertEquals(2, $query->count());
 
         $query = Contact::query();
         $filter->apply(app(NovaRequest::class), $query, [
