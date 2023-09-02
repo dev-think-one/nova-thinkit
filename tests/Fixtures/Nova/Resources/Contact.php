@@ -31,8 +31,8 @@ class Contact extends Resource
     public function actions(NovaRequest $request)
     {
         return [
-            LoginToDifferentGuard::make('http://me.bar', 'web'),
-            SendResetPasswordEmail::make('users'),
+            LoginToDifferentGuard::make('http://me.bar', 'web', 'Foo', 'Bar baz'),
+            SendResetPasswordEmail::make('contacts', 'Baz', 'Qux quix'),
         ];
     }
 }

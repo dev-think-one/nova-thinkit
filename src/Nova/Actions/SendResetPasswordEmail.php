@@ -15,9 +15,9 @@ class SendResetPasswordEmail extends DestructiveAction
 {
     use ForUser;
 
-    public $showInline            = true;
-    public $showOnIndex           = false;
-    public $showOnDetail          = true;
+    public $showInline   = true;
+    public $showOnIndex  = false;
+    public $showOnDetail = true;
 
     public function __construct(
         protected string $broker,
@@ -35,17 +35,17 @@ class SendResetPasswordEmail extends DestructiveAction
     /**
      * Perform the action on the given models.
      *
-     * @param  \Laravel\Nova\Fields\ActionFields  $fields
-     * @param  \Illuminate\Support\Collection  $models
+     * @param \Laravel\Nova\Fields\ActionFields $fields
+     * @param \Illuminate\Support\Collection $models
      *
      * @return mixed
      */
     public function handle(ActionFields $fields, Collection $models)
     {
         $model = $models->first();
-        if ($model
-            && $model instanceof Model
-            && ($modelId = $this->findId($model))
+        if (
+            $model instanceof Model &&
+            ($modelId = $this->findId($model))
         ) {
             $status = Password::broker($this->broker)->sendResetLink([
                 $model->getKeyName() => $modelId,

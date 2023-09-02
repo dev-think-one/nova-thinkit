@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Nova\NovaCoreServiceProvider;
+use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\NovaServiceProvider;
 use Orchestra\Testbench\Database\MigrateProcessor;
 
@@ -62,6 +63,27 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
 
+        $app['config']->set('auth.providers', array_merge(
+            $app['config']->get('auth.providers'),
+            [
+                'contacts' => [
+                    'driver' => 'eloquent',
+                    'model'  => Contact::class,
+                ],
+            ]
+        ));
+
+        $app['config']->set('auth.passwords', array_merge(
+            $app['config']->get('auth.passwords'),
+            [
+                'contacts' => [
+                    'provider' => 'contacts',
+                    'table'    => 'password_reset_tokens',
+                    'expire'   => 60,
+                    'throttle' => 60,
+                ],
+            ]
+        ));
         // $app['config']->set('nova-thinkit.some_key', 'some_value');
     }
 }
