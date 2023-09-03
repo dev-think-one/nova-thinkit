@@ -1,17 +1,17 @@
 {
-    "name": "yaroslawww/nova-thinkit",
+    "name": "think.studio/nova-thinkit",
     "description": "Laravel Nova small kit for quicker development.",
     "keywords": [
         "laravel",
         "nova",
         "think"
     ],
-    "homepage": "https://github.com/yaroslawww/nova-thinkit",
+    "homepage": "https://github.com/dev-think-one/nova-thinkit",
     "license": "MIT",
     "authors": [
         {
             "name": "Yaroslav Georgitsa",
-            "email": "yaroslav.georgitsa@gmail.com",
+            "email": "yg@think.studio",
             "homepage": "https://github.com/yaroslawww",
             "role": "Developer"
         }
