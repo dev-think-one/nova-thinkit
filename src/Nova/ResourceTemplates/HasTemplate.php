@@ -16,6 +16,7 @@ trait HasTemplate
         return [
             Select::make('Template', $this->templateKeyName())
                 ->placeholder('Default')
+                ->searchable()
                 ->options(TemplateFinder::templatesNames(static::$model))
                 ->displayUsingLabels()
                 ->nullable(),

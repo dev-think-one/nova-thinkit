@@ -8,6 +8,7 @@ use Laravel\Nova\NovaApplicationServiceProvider;
 use NovaThinKit\Tests\Fixtures\Nova\Resources\Contact;
 use NovaThinKit\Tests\Fixtures\Nova\Resources\Page;
 use NovaThinKit\Tests\Fixtures\Nova\Resources\Post;
+use NovaThinKit\Tests\Fixtures\Nova\ResourceTemplates\Pages\HomePageTemplate;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -19,6 +20,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function boot()
     {
         parent::boot();
+
+        \NovaThinKit\Nova\ResourceTemplates\TemplateFinder::templatesMap(\NovaThinKit\Tests\Fixtures\Models\Page::class, [
+            'home'           => HomePageTemplate::class,
+        ]);
     }
 
     /**

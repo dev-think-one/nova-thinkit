@@ -4,6 +4,7 @@ namespace NovaThinKit\Tests\Fixtures\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use NovaThinKit\FeatureImage\FeatureImageManager;
 use NovaThinKit\FeatureImage\ImageManager;
 use NovaThinKit\Tests\Fixtures\Factories\PageFactory;
@@ -14,6 +15,11 @@ class Page extends Model implements \NovaThinKit\FeatureImage\Models\WithFeature
     use HasFactory;
 
     protected $guarded = [];
+
+    public function meta(): HasMany
+    {
+        return $this->hasMany(PageMeta::class, 'page_id', 'id');
+    }
 
     // Optionally you can change default storage directory
     public function featureImageManagerDirectory(?string $tag = null): string

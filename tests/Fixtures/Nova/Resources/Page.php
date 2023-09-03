@@ -12,6 +12,7 @@ use Laravel\Nova\Resource;
 class Page extends Resource
 {
     use \NovaThinKit\FeatureImage\Nova\HasFeatureImage;
+    use \NovaThinKit\Nova\ResourceTemplates\HasTemplate;
 
     public static $model = \NovaThinKit\Tests\Fixtures\Models\Page::class;
 
@@ -22,6 +23,8 @@ class Page extends Resource
         return [
             Text::make('Title', 'title'),
             $this->fieldFeatureImage('Image', 'fooBar'),
+
+            ...$this->templateFields($request),
         ];
     }
 }

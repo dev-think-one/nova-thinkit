@@ -230,7 +230,7 @@ class Page extends Resource
 }
 ```
 
-### Dynamic fields based on template field
+### Page templates (Dynamic fields based on template field)
 
 Create template fields wrapper
 
@@ -247,8 +247,13 @@ class HomePageTemplate extends ResourceTemplate
         $metaUpdater = new MetaFieldUpdater('meta', 'key', 'value');
 
         return [
+            Text::make('Some Custom text', 'some_custom_text')
+                ->hideWhenCreating()
+                ->hideFromIndex()
+                ->showOnPreview(),
             $metaUpdater->field(
                 Text::make('Custom text', 'custom_text')
+                    ->hideWhenCreating()
                     ->hideFromIndex()
                     ->showOnPreview(),
             ),
@@ -257,7 +262,7 @@ class HomePageTemplate extends ResourceTemplate
 }
 ```
 
-Add mapping 
+Add mapping
 
 ```php
 class AppServiceProvider extends ServiceProvider

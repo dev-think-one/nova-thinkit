@@ -19,4 +19,11 @@ class PageFactory extends Factory
             'title' => $this->faker->unique()->word(),
         ];
     }
+
+    public function template(?string $template = null): static
+    {
+        return $this->state([
+            'template' => $template,
+        ]);
+    }
 }

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('baz_image')->nullable();
+            $table->string('template')->nullable();
             $table->timestamps();
         });
     }
