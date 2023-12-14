@@ -51,23 +51,25 @@ class MetaFieldUpdater
                 return null;
             })
             ->fillUsing(function ($request, $model, $attribute, $requestAttribute) use ($fill, $computedAttribute) {
-                $meta = $model->fresh()->{$this->relationship}()->firstOrNew(
-                    [$this->keyName => $computedAttribute ?? $attribute],
-                    [$this->dataKeyName => null]
-                );
+                if($model->exists) {
+                    $meta = $model->fresh()->{$this->relationship}()->firstOrNew(
+                        [$this->keyName => $computedAttribute ?? $attribute],
+                        [$this->dataKeyName => null]
+                    );
 
-                if ($fill) {
-                    $value = $fill($meta, $request->$requestAttribute, $request, $model, $attribute, $requestAttribute);
-                    $meta->fill([
-                        $this->dataKeyName => is_string($value) ? $value : json_encode($value),
-                    ]);
-                } else {
-                    $meta->fill([
-                        $this->dataKeyName => $request->$requestAttribute,
-                    ]);
+                    if ($fill) {
+                        $value = $fill($meta, $request->$requestAttribute, $request, $model, $attribute, $requestAttribute);
+                        $meta->fill([
+                            $this->dataKeyName => is_string($value) ? $value : json_encode($value),
+                        ]);
+                    } else {
+                        $meta->fill([
+                            $this->dataKeyName => $request->$requestAttribute,
+                        ]);
+                    }
+
+                    $meta->save();
                 }
-
-                $meta->save();
             });
 
         return $field;
