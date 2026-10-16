@@ -8,6 +8,7 @@ use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\Fixtures\Models\Tag;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class BelongsToManyFilterTest extends TestCase
 {
@@ -22,7 +23,7 @@ class BelongsToManyFilterTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function get_options()
     {
         $tag1 = Tag::factory()
@@ -46,7 +47,7 @@ class BelongsToManyFilterTest extends TestCase
         $this->assertEquals($tag3->name, $response->json('1.options.2.label'));
     }
 
-    /** @test */
+    #[Test]
     public function filter()
     {
         $tag1 = Tag::factory()

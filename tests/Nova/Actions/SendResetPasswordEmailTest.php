@@ -11,6 +11,7 @@ use NovaThinKit\Nova\Actions\SendResetPasswordEmail;
 use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use ThinkStudio\HtmlField\Html;
 
 class SendResetPasswordEmailTest extends TestCase
@@ -26,7 +27,7 @@ class SendResetPasswordEmailTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function show_fields()
     {
         Contact::factory()->count(12)->create();
@@ -62,7 +63,7 @@ class SendResetPasswordEmailTest extends TestCase
         $this->assertEquals('Qux quix', $htmlFiled->value);
     }
 
-    /** @test */
+    #[Test]
     public function handle()
     {
         Notification::fake();
@@ -87,7 +88,7 @@ class SendResetPasswordEmailTest extends TestCase
         $this->assertEquals('We have emailed your password reset link.', $response->json('message'));
     }
 
-    /** @test */
+    #[Test]
     public function handle_incorrect_model()
     {
         Notification::fake();
@@ -111,7 +112,7 @@ class SendResetPasswordEmailTest extends TestCase
         $this->assertEquals('We can\'t find a user with that email address.', $response->json('danger'));
     }
 
-    /** @test */
+    #[Test]
     public function handle_no_model()
     {
         Notification::fake();

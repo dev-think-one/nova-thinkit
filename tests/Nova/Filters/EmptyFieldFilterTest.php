@@ -7,10 +7,11 @@ use NovaThinKit\Nova\Filters\EmptyFieldFilter;
 use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class EmptyFieldFilterTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function configuration()
     {
         $filter = EmptyFieldFilter::make('content', 'Empty content');
@@ -21,7 +22,7 @@ class EmptyFieldFilterTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function direct_filter()
     {
         Post::factory()->count(5)->create();
@@ -60,7 +61,7 @@ class EmptyFieldFilterTest extends TestCase
         $this->assertEquals(27, $query->count());
     }
 
-    /** @test */
+    #[Test]
     public function relation_filter()
     {
         Contact::factory()

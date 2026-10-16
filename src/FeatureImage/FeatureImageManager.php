@@ -9,8 +9,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use NovaThinKit\FeatureImage\Models\WithFeatureImage;
-use Spatie\Image\Image;
-use Spatie\Image\Manipulations;
+use SimpleImageManager\Manipulations\ImageManipulator;
+use Spatie\Image\Enums\Fit;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FeatureImageManager implements ImageManager
@@ -54,6 +54,13 @@ class FeatureImageManager implements ImageManager
 
     protected ?string $tag = null;
 
+    /**
+     * Spatie image driver: "gd", "imagick" or "vips".
+     *
+     * @var string
+     */
+    public string $imageDriver = ImageManipulator::DEFAULT_DRIVER;
+
     public function __construct(?string $disc = null, array $formats = [], bool $responsive = false, array $options = [])
     {
         $this->disk       = $disc;
@@ -71,6 +78,10 @@ class FeatureImageManager implements ImageManager
 
         if (isset($options['deletedFormats']) && is_array($options['deletedFormats'])) {
             $this->deletedFormats = $options['deletedFormats'];
+        }
+
+        if (!empty($options['imageDriver']) && is_string($options['imageDriver'])) {
+            $this->imageDriver = $options['imageDriver'];
         }
     }
 
@@ -127,18 +138,16 @@ class FeatureImageManager implements ImageManager
         $storagePath = "{$fileDir}{$newFileName}{$newFileExt}";
         $path        = $storage->path($storagePath);
 
-        Image::load($image->path())
-            ->fit(Manipulations::FIT_MAX, 2800, 1800)
+        ImageManipulator::load($image->path(), $this->imageDriver)
+            ->fit(Fit::Max, 2800, 1800)
             ->optimize()
             ->save($path);
 
         foreach ($this->formats as $format => $configuration) {
             $formatPath = $storage->path("{$fileDir}{$newFileName}-{$format}{$newFileExt}");
-            $builder    = Image::load($image->path());
+            $builder    = ImageManipulator::load($image->path(), $this->imageDriver);
             if (!empty($configuration['methods']) && is_array($configuration['methods'])) {
-                foreach ($configuration['methods'] as $method => $attrs) {
-                    call_user_func_array([$builder, $method], $attrs);
-                }
+                ImageManipulator::apply($builder, $configuration['methods']);
             }
             $builder->save($formatPath);
         }
@@ -147,7 +156,7 @@ class FeatureImageManager implements ImageManager
             $width = 1600;
             while ($width >= 400) {
                 $scalePath = $storage->path("{$fileDir}{$newFileName}-{$width}{$newFileExt}");
-                Image::load($path)
+                ImageManipulator::load($path, $this->imageDriver)
                     ->width($width)
                     ->optimize()
                     ->save($scalePath);

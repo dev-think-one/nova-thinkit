@@ -8,6 +8,7 @@ use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class BelongsToFilterTest extends TestCase
 {
@@ -22,7 +23,7 @@ class BelongsToFilterTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function get_options()
     {
         $contact1 = Contact::factory()
@@ -46,7 +47,7 @@ class BelongsToFilterTest extends TestCase
         $this->assertEquals($contact3->email, $response->json('0.options.2.label'));
     }
 
-    /** @test */
+    #[Test]
     public function filter()
     {
         $contact1 = Contact::factory()

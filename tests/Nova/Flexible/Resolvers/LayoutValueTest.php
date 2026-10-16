@@ -4,10 +4,11 @@ namespace NovaThinKit\Tests\Nova\Flexible\Resolvers;
 
 use NovaThinKit\Nova\Flexible\Resolvers\LayoutValue;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LayoutValueTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function magic_get()
     {
         $layoutValue = new LayoutValue([
@@ -21,7 +22,7 @@ class LayoutValueTest extends TestCase
         $this->assertEquals('quex', $layoutValue->baz['qux']);
     }
 
-    /** @test */
+    #[Test]
     public function get_attribute()
     {
         $layoutValue = new LayoutValue([
@@ -37,7 +38,7 @@ class LayoutValueTest extends TestCase
         $this->assertEquals('quex', $layoutValue->attribute('baz.qux'));
     }
 
-    /** @test */
+    #[Test]
     public function get_layouts_attribute()
     {
         $layoutValue = new LayoutValue([
@@ -73,7 +74,7 @@ class LayoutValueTest extends TestCase
         $this->assertEmpty($layoutValue->layoutsAttribute('baz.not_exists'));
     }
 
-    /** @test */
+    #[Test]
     public function to_string()
     {
         $data = [

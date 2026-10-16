@@ -7,6 +7,7 @@ use NovaFlexibleContent\Http\FlexibleAttribute;
 use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MetaFieldUpdaterTest extends TestCase
 {
@@ -21,7 +22,7 @@ class MetaFieldUpdaterTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function update_meta_simple()
     {
         /** @var Contact $contact */
@@ -53,7 +54,7 @@ class MetaFieldUpdaterTest extends TestCase
         $this->assertEquals('developer', $response->json('resource.fields.2.value'));
     }
 
-    /** @test */
+    #[Test]
     public function update_meta_callback()
     {
         /** @var Contact $contact */
@@ -85,7 +86,7 @@ class MetaFieldUpdaterTest extends TestCase
         $this->assertEquals(1.35, $response->json('resource.fields.3.value'));
     }
 
-    /** @test */
+    #[Test]
     public function update_meta_array()
     {
         /** @var Contact $contact */
@@ -121,7 +122,7 @@ class MetaFieldUpdaterTest extends TestCase
         $this->assertEquals('qux', $response->json('resource.fields.4.value')['baz']);
     }
 
-    /** @test */
+    #[Test]
     public function update_meta_raw_value()
     {
         /** @var Contact $contact */
@@ -155,7 +156,7 @@ class MetaFieldUpdaterTest extends TestCase
         $this->assertEquals('{"foo":"bar","baz":"qux"}', $response->json('resource.fields.5.value'));
     }
 
-    /** @test */
+    #[Test]
     public function update_meta_flexible()
     {
         /** @var Contact $contact */

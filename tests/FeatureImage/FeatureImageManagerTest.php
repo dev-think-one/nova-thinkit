@@ -11,11 +11,12 @@ use NovaThinKit\Tests\Fixtures\Models\Page;
 use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\Fixtures\Models\PostWithoutTrait;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FeatureImageManagerTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function default_path()
     {
         /** @var Page $page */
@@ -35,7 +36,7 @@ class FeatureImageManagerTest extends TestCase
         $this->assertNull($manager->url());
     }
 
-    /** @test */
+    #[Test]
     public function default_path_and_column_from_config()
     {
         /** @var FeatureImageManager $manager */
@@ -53,7 +54,7 @@ class FeatureImageManagerTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function exists_function()
     {
         /** @var Page $page */
@@ -80,7 +81,7 @@ class FeatureImageManagerTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function delete_direct_file()
     {
         /** @var Page $page */
@@ -100,7 +101,7 @@ class FeatureImageManagerTest extends TestCase
         Storage::disk('baz')->assertMissing('foo/baz.png');
     }
 
-    /** @test */
+    #[Test]
     public function store_delete_function()
     {
         /** @var Page $page */
@@ -121,7 +122,7 @@ class FeatureImageManagerTest extends TestCase
         $this->assertFalse($manager->exists(1200));
     }
 
-    /** @test */
+    #[Test]
     public function url_function()
     {
         /** @var Page $page */
@@ -137,7 +138,7 @@ class FeatureImageManagerTest extends TestCase
         $this->assertEquals($manager->url(), $manager->url(1200));
     }
 
-    /** @test */
+    #[Test]
     public function path_function()
     {
         /** @var Page $page */
@@ -156,7 +157,7 @@ class FeatureImageManagerTest extends TestCase
 
     }
 
-    /** @test */
+    #[Test]
     public function download_function()
     {
         /** @var Page $page */
@@ -172,7 +173,7 @@ class FeatureImageManagerTest extends TestCase
         $this->assertInstanceOf(StreamedResponse::class, $manager->download(1200));
     }
 
-    /** @test */
+    #[Test]
     public function get_model()
     {
         /** @var Page $page */
@@ -188,7 +189,7 @@ class FeatureImageManagerTest extends TestCase
         $this->assertEquals($page->getKey(), $manager->getModel()->getKey());
     }
 
-    /** @test */
+    #[Test]
     public function directory_function()
     {
         /** @var Page $page */

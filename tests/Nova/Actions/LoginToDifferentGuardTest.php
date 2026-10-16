@@ -9,6 +9,7 @@ use NovaThinKit\Nova\Actions\LoginToDifferentGuard;
 use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use ThinkStudio\HtmlField\Html;
 
 class LoginToDifferentGuardTest extends TestCase
@@ -24,7 +25,7 @@ class LoginToDifferentGuardTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function show_fields()
     {
         Contact::factory()->count(12)->create();
@@ -62,7 +63,7 @@ class LoginToDifferentGuardTest extends TestCase
         $this->assertEquals('Bar baz', $htmlFiled->value);
     }
 
-    /** @test */
+    #[Test]
     public function handle()
     {
         Contact::factory()->count(12)->create();
@@ -82,7 +83,7 @@ class LoginToDifferentGuardTest extends TestCase
         $this->assertEquals('http://me.bar', $response->json('openInNewTab'));
     }
 
-    /** @test */
+    #[Test]
     public function handle_callback_function()
     {
         Contact::factory()->count(12)->create();
@@ -102,7 +103,7 @@ class LoginToDifferentGuardTest extends TestCase
         $this->assertEquals('http://other.bar', $response->json('openInNewTab'));
     }
 
-    /** @test */
+    #[Test]
     public function handle_no_model()
     {
         app('config')->set('auth.providers.contacts.model', \Illuminate\Foundation\Auth\User::class);

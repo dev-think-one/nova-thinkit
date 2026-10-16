@@ -7,7 +7,7 @@ return [
             'immutableExtensions'  => [ '.svg', '.gif' ],
             'original'             => [
                 'methods' => [
-                    'fit'      => [ \Spatie\Image\Manipulations::FIT_CROP, 2800, 1800 ],
+                    'fit'      => [ \Spatie\Image\Enums\Fit::Crop, 2800, 1800 ],
                     'optimize' => [],
                 ],
                 'srcset'  => '2800w',
@@ -16,7 +16,7 @@ return [
             'formats'              => [
                 'thumb' => [
                     'methods' => [
-                        'fit'      => [ \Spatie\Image\Manipulations::FIT_CONTAIN, 450, 300 ],
+                        'fit'      => [ \Spatie\Image\Enums\Fit::Contain, 450, 300 ],
                         'optimize' => [],
                     ],
                     'srcset'  => '450w',

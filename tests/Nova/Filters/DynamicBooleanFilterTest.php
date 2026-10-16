@@ -7,10 +7,11 @@ use NovaThinKit\Nova\Filters\DynamicBooleanFilter;
 use NovaThinKit\Tests\Fixtures\Models\Contact;
 use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class DynamicBooleanFilterTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function configuration()
     {
         $filter = DynamicBooleanFilter::make([
@@ -25,7 +26,7 @@ class DynamicBooleanFilterTest extends TestCase
         $this->assertEquals('nova-thin-kit\-nova\-filters\-dynamic-boolean-filter-status--foo', $filter->key());
     }
 
-    /** @test */
+    #[Test]
     public function direct_filter()
     {
         Post::factory()->count(5)->create();
@@ -67,7 +68,7 @@ class DynamicBooleanFilterTest extends TestCase
         $this->assertEquals(27, $query->count());
     }
 
-    /** @test */
+    #[Test]
     public function relation_filter()
     {
         Contact::factory()

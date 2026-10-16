@@ -8,6 +8,7 @@ use NovaThinKit\Tests\Fixtures\Models\Page;
 use NovaThinKit\Tests\Fixtures\Models\Post;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class NovaFeatureImageApiTest extends TestCase
 {
@@ -22,7 +23,7 @@ class NovaFeatureImageApiTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function update_feature_image_default()
     {
         Post::factory()->count(12)->create();
@@ -62,7 +63,7 @@ class NovaFeatureImageApiTest extends TestCase
         Storage::disk('feature-images')->assertMissing($savedImage);
     }
 
-    /** @test */
+    #[Test]
     public function update_feature_image()
     {
         Page::factory()->count(12)->create();
@@ -102,7 +103,7 @@ class NovaFeatureImageApiTest extends TestCase
         Storage::disk('baz')->assertMissing($savedImage);
     }
 
-    /** @test */
+    #[Test]
     public function show_urls()
     {
         Page::factory()->count(12)->create();
@@ -129,7 +130,7 @@ class NovaFeatureImageApiTest extends TestCase
         $this->assertEquals($page->featureImageManager('fooBar')->url('thumb'), $response->json('fields.1.previewUrl'));
     }
 
-    /** @test */
+    #[Test]
     public function delete_image()
     {
         Page::factory()->count(12)->create();
@@ -158,7 +159,7 @@ class NovaFeatureImageApiTest extends TestCase
         Storage::disk('baz')->assertMissing($page->$imageKey);
     }
 
-    /** @test */
+    #[Test]
     public function download_image()
     {
         Page::factory()->count(12)->create();

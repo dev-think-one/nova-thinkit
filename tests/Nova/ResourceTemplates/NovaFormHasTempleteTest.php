@@ -5,6 +5,7 @@ namespace NovaThinKit\Tests\Nova\ResourceTemplates;
 use NovaThinKit\Tests\Fixtures\Models\Page;
 use NovaThinKit\Tests\Fixtures\Models\User;
 use NovaThinKit\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class NovaFormHasTempleteTest extends TestCase
 {
@@ -19,7 +20,7 @@ class NovaFormHasTempleteTest extends TestCase
         $this->actingAs($this->admin);
     }
 
-    /** @test */
+    #[Test]
     public function get_form_without_template()
     {
         /** @var Page $page */
@@ -37,7 +38,7 @@ class NovaFormHasTempleteTest extends TestCase
         $this->assertEquals('home', $response->json('fields.2.options.0.value'));
     }
 
-    /** @test */
+    #[Test]
     public function get_form_with_template()
     {
         /** @var Page $page */
@@ -71,7 +72,7 @@ class NovaFormHasTempleteTest extends TestCase
         $this->assertEquals('Boo Bar baz', $response->json('fields.3.value'));
     }
 
-    /** @test */
+    #[Test]
     public function get_form_with_wrong_template()
     {
         /** @var Page $page */
